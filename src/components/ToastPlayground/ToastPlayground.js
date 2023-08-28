@@ -1,6 +1,7 @@
 import React from "react";
 
 import Button from "../Button";
+import Toast from "../Toast";
 
 import styles from "./ToastPlayground.module.css";
 
@@ -9,14 +10,32 @@ const VARIANT_OPTIONS = ["notice", "warning", "success", "error"];
 function ToastPlayground() {
   const [message, setMessage] = React.useState("");
   const [userOption, setUserOption] = React.useState("");
-  console.log(userOption, "option")
+  const [isPopUpShown, setIsPopUpShown] = React.useState(false);
+
+  function handleSubmit(event) {
+    event.preventDefault();
+    if (!isPopUpShown && userOption && message) {
+      setIsPopUpShown(true);
+      return
+    }
+    window.alert("Message text and type are mandatory");
+    setIsPopUpShown(false);
+  }
   return (
     <div className={styles.wrapper}>
       <header>
         <img alt="Cute toast mascot" src="/toast.png" />
         <h1>Toast Playground</h1>
       </header>
-
+      {isPopUpShown && (
+        <Toast
+          userOption={userOption}
+          message={message}
+          setUserOption={setUserOption}
+          setMessage={setMessage}
+          setIsPopUpShown={setIsPopUpShown}
+        ></Toast>
+      )}
       <div className={styles.controlsWrapper}>
         <div className={styles.row}>
           <label
@@ -64,7 +83,7 @@ function ToastPlayground() {
         <div className={styles.row}>
           <div className={styles.label} />
           <div className={`${styles.inputWrapper} ${styles.radioWrapper}`}>
-            <Button>Pop Toast!</Button>
+            <Button handleSubmit={handleSubmit}>Pop Toast!</Button>
           </div>
         </div>
       </div>
