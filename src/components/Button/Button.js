@@ -1,12 +1,15 @@
-import React from 'react';
+import React from "react";
 
-import styles from './Button.module.css';
+import styles from "./Button.module.css";
 
-function Button({ className = '', ...delegated }) {
+function Button({ className = "", handleSubmit, ...delegated }) {
   return (
     <button
       className={`${styles.button} ${className}`}
       {...delegated}
+      onClick={(event) => {
+        handleSubmit(event);
+      }}
     />
   );
 }
