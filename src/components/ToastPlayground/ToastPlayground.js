@@ -1,7 +1,7 @@
 import React from "react";
 
 import Button from "../Button";
-import Toast from "../Toast";
+import ToastShelf from "../ToastShelf";
 
 import styles from "./ToastPlayground.module.css";
 
@@ -9,34 +9,45 @@ const VARIANT_OPTIONS = ["notice", "warning", "success", "error"];
 
 function ToastPlayground() {
   const [message, setMessage] = React.useState("");
-  const [userOption, setUserOption] = React.useState("");
-  const [isPopUpShown, setIsPopUpShown] = React.useState(false);
+  const [variant, setVariant] = React.useState(VARIANT_OPTIONS[0]);
 
-  function handleSubmit(event) {
+  const [toasts, setToasts] = React.useState([]);
+
+  function handleCreateToast(event) {
     event.preventDefault();
-    if (!isPopUpShown && userOption && message) {
-      setIsPopUpShown(true);
-      return
-    }
-    window.alert("Message text and type are mandatory");
-    setIsPopUpShown(false);
+
+    const nextToasts = [
+      ...toasts,
+      {
+        id: crypto.randomUUID(),
+        message,
+        variant,
+      },
+    ];
+
+    setToasts(nextToasts);
+
+    setMessage("");
+    setVariant(VARIANT_OPTIONS[0]);
   }
+  function handleDismiss(id) {
+    const nextToasts = toasts.filter((toast) => {
+      return toast.id !== id;
+    });
+
+    setToasts(nextToasts);
+  }
+
   return (
     <div className={styles.wrapper}>
       <header>
         <img alt="Cute toast mascot" src="/toast.png" />
         <h1>Toast Playground</h1>
       </header>
-      {isPopUpShown && (
-        <Toast
-          userOption={userOption}
-          message={message}
-          setUserOption={setUserOption}
-          setMessage={setMessage}
-          setIsPopUpShown={setIsPopUpShown}
-        ></Toast>
-      )}
-      <div className={styles.controlsWrapper}>
+
+      <ToastShelf toasts={toasts} handleDismiss={handleDismiss} />
+
+      <form className={styles.controlsWrapper} onSubmit={handleCreateToast}>
         <div className={styles.row}>
           <label
             htmlFor="message"
@@ -68,9 +79,9 @@ function ToastPlayground() {
                     type="radio"
                     name="variant"
                     value={option}
-                    checked={option === userOption}
+                    checked={option === variant}
                     onChange={(event) => {
-                      setUserOption(event.target.value);
+                      setVariant(event.target.value);
                     }}
                   />
                   {option}
@@ -83,10 +94,10 @@ function ToastPlayground() {
         <div className={styles.row}>
           <div className={styles.label} />
           <div className={`${styles.inputWrapper} ${styles.radioWrapper}`}>
-            <Button handleSubmit={handleSubmit}>Pop Toast!</Button>
+            <Button>Pop Toast!</Button>
           </div>
         </div>
-      </div>
+      </form>
     </div>
   );
 }

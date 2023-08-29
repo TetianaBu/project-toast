@@ -18,30 +18,17 @@ const ICONS_BY_VARIANT = {
   error: AlertOctagon,
 };
 
-function Toast({
-  userOption,
-  message,
-  setUserOption,
-  setMessage,
-  setIsPopUpShown,
-}) {
-  const classNames = `${styles.toast} ${styles[userOption]}`;
-  const Icon = ICONS_BY_VARIANT[userOption];
+function Toast({ id, variant, handleDismiss, children }) {
+  const classNames = `${styles.toast} ${styles[variant]}`;
+  const Icon = ICONS_BY_VARIANT[variant];
 
   return (
     <div className={classNames}>
       <div className={styles.iconContainer}>
         <Icon size={24} />
       </div>
-      <p className={styles.content}>{message}</p>
-      <button
-        className={styles.closeButton}
-        onClick={() => {
-          setUserOption("");
-          setMessage("");
-          setIsPopUpShown(false);
-        }}
-      >
+      <p className={styles.content}>{children}</p>
+      <button className={styles.closeButton} onClick={() => handleDismiss(id)}>
         <X size={24} />
         <VisuallyHidden>Dismiss message</VisuallyHidden>
       </button>
